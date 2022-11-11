@@ -1,8 +1,9 @@
 package com.globallogic.domain.usecases
 
-import com.globallogic.domain.repository.ItunesSearchRepository
+import com.globallogic.domain.repository1567705492.ItunesSearchRepository
 
-class GetSearchResultUseCase(private val itunesSearchRepository: ItunesSearchRepository) {
+
+class GetSearchResultUseCase(private val itunesSearchRepository:ItunesSearchRepository) {
 
     suspend operator fun invoke(
         searchWord: String,

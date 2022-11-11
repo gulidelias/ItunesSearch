@@ -3,7 +3,7 @@ package com.globallogic.domain.usecases
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.globallogic.domain.entities.Song
 import com.globallogic.domain.repository.BaseResponse
-import com.globallogic.domain.repository.ItunesSearchRepository
+import com.globallogic.domain.repository1567705492.ItunesSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -13,8 +13,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
@@ -96,15 +94,11 @@ class GetSongsByAlbumUseCaseTest {
         val SONG = Song(
             artistId = 1,
             artistName = "artist name",
-            artworkUrl100 = "url",
+            imageCover = "url",
             collectionId = 2,
             collectionName = "album name",
-            collectionViewUrl = "url",
-            kind = "song",
-            previewUrl = "url",
             trackId = 1,
             trackName = "song name",
-            trackNumber = 2,
             trackViewUrl = "url"
         )
         val SEARCH_RESPONSE = BaseResponse.Success(SONG)
