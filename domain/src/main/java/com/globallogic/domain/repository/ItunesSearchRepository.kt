@@ -1,6 +1,8 @@
-package com.globallogic.domain.repository
+package com.globallogic.domain.repository1567705492
 
+import com.globallogic.domain.entities.AlbumWithSongs
 import com.globallogic.domain.entities.Song
+import com.globallogic.domain.repository.BaseResponse
 
 interface ItunesSearchRepository {
 
@@ -9,10 +11,11 @@ interface ItunesSearchRepository {
         mediaType: String,
         entityType: String,
         limit: Int
-    ): BaseResponse<Song>
+    ): BaseResponse<List<Song>>
 
-    suspend fun getSongByAlbumId(
+    suspend fun getSongsByAlbumId(
         albumId: Int,
         entityType: String
-    ): BaseResponse<Song>
+    ): BaseResponse<AlbumWithSongs>
+
 }

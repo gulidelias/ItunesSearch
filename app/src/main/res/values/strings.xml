@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ItunesSearch</string>
+    <string name="hintSearch">Search song, artist or album</string>
+    <string name="search">search</string>
+    <string name="album_cover">album_cover</string>
+    <string name="play_button">play button</string>
 </resources>
