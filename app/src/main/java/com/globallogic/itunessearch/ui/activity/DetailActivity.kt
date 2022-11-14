@@ -3,7 +3,6 @@ package com.globallogic.itunessearch.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,22 +38,12 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         setupRecycler()
         getSongsByAlbumId(selectedSong)
         setupPlayer()
-        addMP3("https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/a2/d3/b3/a2d3b33f-e6b3-cbd8-6efb-fa9ecb9c668a/mzaf_16013347745276122340.plus.aac.p.m4a")
-
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getInt("mediaItem") != 0) {
-                val restoredMediaItem = savedInstanceState.getInt("mediaItem")
-                val seekTime = savedInstanceState.getLong("SeekTime")
-                exoPlayer.seekTo(restoredMediaItem, seekTime)
-                exoPlayer.play()
-            }
-        }
+        selectedSong?.previewUrl?.let { addMP3(it) }
     }
 
     override fun onResume() {
         super.onResume()
         setupPlayer()
-        addMP3("https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/a2/d3/b3/a2d3b33f-e6b3-cbd8-6efb-fa9ecb9c668a/mzaf_16013347745276122340.plus.aac.p.m4a")
         detailViewModel.liveDataListOfSong.observe(this) {
             detailAdapter.listSong = it
             detailAdapter.notifyDataSetChanged()
@@ -75,25 +64,17 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         binding.songAlbum.text = song?.collectionName
         binding.songTitle.text = song?.trackName
         val url = song?.imageCover
-        Picasso.get()
-            .load(url)
-            .fit()
-            .into(binding.albumCover)
-    }
-
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        when (playbackState) {
-            Player.STATE_BUFFERING -> {
-                progressBar.visibility = View.VISIBLE
-            }
-            Player.STATE_READY -> {
-                progressBar.visibility = View.INVISIBLE
-            }
-        }
+        Picasso.get().load(url).fit().into(binding.albumCover)
     }
 
     private fun setupRecycler() {
-        detailAdapter = DetailAdapter(emptyList())
+        detailAdapter = DetailAdapter(emptyList()) { song ->
+            setupView(song)
+            song.previewUrl?.let {
+                addMP3(it)
+                exoPlayer.play()
+            }
+        }
         binding.recyclerViewDetails.apply {
             adapter = detailAdapter
             layoutManager = LinearLayoutManager(context)
@@ -105,7 +86,8 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         styledPlayerView = binding.exoPlayerView
         styledPlayerView.player = exoPlayer
         styledPlayerView.controllerShowTimeoutMs = 0
-
+        styledPlayerView.useArtwork = true
+        styledPlayerView.defaultArtwork
         exoPlayer.addListener(this)
     }
 
@@ -113,18 +95,8 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         // Build the media item.
         val mediaItem = MediaItem.fromUri(mp3Url)
         exoPlayer.setMediaItem(mediaItem)
-        // Set the media item to be played.
-        exoPlayer.setMediaItem(mediaItem)
         // Prepare the player.
         exoPlayer.prepare()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // current play position
-        outState.putLong("SeekTime", exoPlayer.currentPosition)
-        // current mediaItem
-        outState.putInt("mediaItem", exoPlayer.currentMediaItemIndex)
     }
 
     companion object {

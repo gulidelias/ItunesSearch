@@ -7,64 +7,80 @@
     android:background="@color/light_grey"
     android:padding="@dimen/padding_s">
 
-    <ImageView
-        android:id="@+id/album_cover"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:contentDescription="@string/album_cover"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/song_title"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_s"
-        android:padding="@dimen/padding_s"
         app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="@dimen/margin_m"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/album_cover"
-        tools:text="Song Name" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/song_album"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_s"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/song_artist"
-        tools:text="Song Album" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/song_artist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_s"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/song_title"
-        tools:text="Song Artist" />
+            <TextView
+                android:id="@+id/song_title"
+                android:maxLines="2"
+                style="@style/TextAppearance.AppCompat.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_s"
+                app:layout_constraintStart_toEndOf="@+id/album_cover"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Song Name" />
+
+            <TextView
+                android:id="@+id/song_artist"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_s"
+                app:layout_constraintStart_toEndOf="@+id/album_cover"
+                app:layout_constraintTop_toBottomOf="@+id/song_title"
+                tools:text="Song Artist" />
+
+            <TextView
+                android:id="@+id/song_album"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_s"
+                app:layout_constraintStart_toEndOf="@+id/album_cover"
+                app:layout_constraintTop_toBottomOf="@+id/song_artist"
+                tools:text="Song Album" />
+
+            <ImageView
+                android:id="@+id/album_cover"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:contentDescription="@string/album_cover"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_details"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_s"
+        android:layout_marginTop="@dimen/margin_xs"
         app:layout_constraintBottom_toTopOf="@id/player_conteiner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/song_album"
-
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
         tools:listitem="@layout/item_view_album_song" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/player_conteiner"
-        app:cardCornerRadius="@dimen/padding_m"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:visibility="visible"
+        app:cardCornerRadius="@dimen/padding_m"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -73,8 +89,9 @@
             android:id="@+id/exo_player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:use_artwork="true"
-            app:show_buffering="when_playing">
+            app:show_buffering="when_playing"
+            app:hide_on_touch="false"
+            app:use_artwork="true">
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -87,4 +104,5 @@
         </com.google.android.exoplayer2.ui.StyledPlayerView>
 
     </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,5 +12,5 @@ data class Song(
     val collectionName: String?,
     val trackId: Int?,
     val trackName: String?,
-    val trackViewUrl: String?
+    val previewUrl: String?
 ):Parcelable

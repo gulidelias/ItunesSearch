@@ -7,38 +7,37 @@ import androidx.recyclerview.widget.RecyclerView
 import com.globallogic.domain.entities.Song
 import com.globallogic.itunessearch.R
 import com.globallogic.itunessearch.databinding.ItemViewAlbumSongBinding
-import com.globallogic.itunessearch.databinding.ItemViewSongBinding
-import com.globallogic.itunessearch.ui.activity.DetailActivity
 import com.squareup.picasso.Picasso
 
-class DetailAdapter(var listSong: List<Song>) :
-    RecyclerView.Adapter<DetailAdapter.ViewHolder>() {
+class DetailAdapter(var listSong: List<Song>, private val onSongClicked: (Song) -> Unit) :
+    RecyclerView.Adapter<SongViewHolder>() {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val binding = ItemViewAlbumSongBinding.bind(itemView)
-
-        fun bind(song:  Song) {
-            binding.songTitle.text = song.trackName
-            binding.cardViewAlbumSong.setOnClickListener {
-            }
-
-            val url = song.imageCover
-            Picasso.get()
-                .load(url)
-                .fit()
-                .into(binding.albumCover)
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.item_view_album_song, parent, false)
-        return ViewHolder(view)
+        return SongViewHolder(view, onSongClicked)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         holder.bind(listSong[position])
     }
 
     override fun getItemCount(): Int = listSong.size
+}
+
+
+class SongViewHolder(itemView: View, private val onSongClicked: (Song) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    private val binding = ItemViewAlbumSongBinding.bind(itemView)
+
+    fun bind(song:  Song) {
+        binding.songTitle.text = song.trackName
+        binding.cardViewAlbumSong.setOnClickListener {
+            onSongClicked(song)
+        }
+        val url = song.imageCover
+        Picasso.get()
+            .load(url)
+            .fit()
+            .into(binding.albumCover)
+    }
 }
