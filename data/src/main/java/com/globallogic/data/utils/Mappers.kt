@@ -14,7 +14,7 @@ fun SongDTO.toDomainSong(): Song {
         imageCover = artworkUrl100,
         trackId = trackId,
         trackName = trackName,
-        trackViewUrl = trackViewUrl,
+        previewUrl = previewUrl,
         collectionName = collectionName,
         collectionId = collectionId
     )
@@ -30,7 +30,7 @@ fun AlbumWithSongsDTO.toSong(): Song? {
         collectionName = collectionName,
         trackId = trackId,
         trackName = trackName,
-        trackViewUrl = trackViewUrl
+        previewUrl = previewUrl
 
     )
 }

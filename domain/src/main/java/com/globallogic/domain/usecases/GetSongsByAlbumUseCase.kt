@@ -1,6 +1,6 @@
 package com.globallogic.domain.usecases
 
-import com.globallogic.domain.repository1567705492.ItunesSearchRepository
+import com.globallogic.domain.repository.ItunesSearchRepository
 
 
 class GetSongsByAlbumUseCase(private val itunesSearchRepository: ItunesSearchRepository) {

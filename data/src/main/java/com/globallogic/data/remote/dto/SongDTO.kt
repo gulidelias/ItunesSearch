@@ -28,7 +28,7 @@ data class SongDTO(
     val trackId: Int,
     val trackName: String,
     val trackNumber: Int,
-    val trackPrice: Double,
+    val trackPrice: Double?,
     val trackTimeMillis: Int,
     val trackViewUrl: String,
     val wrapperType: String

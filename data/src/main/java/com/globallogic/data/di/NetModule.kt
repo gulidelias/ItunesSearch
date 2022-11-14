@@ -2,7 +2,8 @@ package com.globallogic.data.di
 
 import com.globallogic.data.remote.api.ItunesSearchApi
 import com.globallogic.data.repository.ItunesSearchRepositoryImpl
-import com.globallogic.domain.repository1567705492.ItunesSearchRepository
+import com.globallogic.data.repository.SearchResultPagingSource
+import com.globallogic.domain.repository.ItunesSearchRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -23,6 +24,7 @@ val networkModule = module {
     single { createOkHttpClient(get()) }
 
     single { createLoggingInterceptor() }
+
 }
 
 fun createLoggingInterceptor(): HttpLoggingInterceptor {

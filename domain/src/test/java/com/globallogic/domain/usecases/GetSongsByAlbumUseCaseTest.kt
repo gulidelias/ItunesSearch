@@ -1,9 +1,11 @@
 package com.globallogic.domain.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.globallogic.domain.entities.Album
+import com.globallogic.domain.entities.AlbumWithSongs
 import com.globallogic.domain.entities.Song
 import com.globallogic.domain.repository.BaseResponse
-import com.globallogic.domain.repository1567705492.ItunesSearchRepository
+import com.globallogic.domain.repository.ItunesSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -20,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
+
 class GetSongsByAlbumUseCaseTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -38,7 +41,7 @@ class GetSongsByAlbumUseCaseTest {
         runTest {
             // GIVEN
             `when`(
-                repository.getSongByAlbumId(
+                repository.getSongsByAlbumId(
                     albumId = ALBUM_ID,
                     entityType = ENTITY_TYPE
                 )
@@ -53,12 +56,12 @@ class GetSongsByAlbumUseCaseTest {
             testDispatcher.scheduler.advanceUntilIdle()
             // THEN
 
-            verify(repository).getSongByAlbumId(
+            verify(repository).getSongsByAlbumId(
                 albumId = ALBUM_ID,
                 entityType = ENTITY_TYPE
             )
             assert(result is BaseResponse.Success)
-            assert((result as BaseResponse.Success<Song>).data == SONG)
+            assert((result as BaseResponse.Success<AlbumWithSongs>).data == albumWithSongs)
         }
     }
 
@@ -67,7 +70,7 @@ class GetSongsByAlbumUseCaseTest {
         runTest {
             // GIVEN
             `when`(
-                repository.getSongByAlbumId(
+                repository.getSongsByAlbumId(
                     entityType = ENTITY_TYPE,
                     albumId = ALBUM_ID
                 )
@@ -81,27 +84,32 @@ class GetSongsByAlbumUseCaseTest {
 
             testDispatcher.scheduler.advanceUntilIdle()
             // THEN
-            verify(repository).getSongByAlbumId(
+            verify(repository).getSongsByAlbumId(
                 entityType = ENTITY_TYPE,
                 albumId = ALBUM_ID
             )
             assert(result is BaseResponse.Failure)
-            assert((result as BaseResponse.Failure<Song>).exception == EXCEPTION)
+            assert((result as BaseResponse.Failure<AlbumWithSongs>).exception == EXCEPTION)
         }
     }
 
     companion object {
-        val SONG = Song(
-            artistId = 1,
-            artistName = "artist name",
-            imageCover = "url",
-            collectionId = 2,
-            collectionName = "album name",
-            trackId = 1,
-            trackName = "song name",
-            trackViewUrl = "url"
+        private val listOfSong = listOf(
+            Song(
+                artistId = 1,
+                artistName = "artist name",
+                collectionId = 2,
+                collectionName = "album name",
+                trackId = 1,
+                trackName = "song name",
+                imageCover = "url",
+                previewUrl = "url"
+            )
         )
-        val SEARCH_RESPONSE = BaseResponse.Success(SONG)
+        private val album = Album(2, "artist name", "url", 2, "album name", "collection")
+
+        val albumWithSongs = AlbumWithSongs(album, listOfSong)
+        val SEARCH_RESPONSE = BaseResponse.Success(albumWithSongs)
         val EXCEPTION = Exception("Error")
         const val ALBUM_ID = 1
         const val ENTITY_TYPE = "song"

@@ -3,60 +3,79 @@ package com.globallogic.itunessearch.ui.activity
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.globallogic.itunessearch.databinding.ActivityMainBinding
-import com.globallogic.itunessearch.ui.adapter.Adapter
+import com.globallogic.itunessearch.ui.adapter.LoadStateAdapter
+import com.globallogic.itunessearch.ui.adapter.MainAdapter
 import com.globallogic.itunessearch.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModel()
-    private lateinit var homeAdapter: Adapter
+    private lateinit var homeMainAdapter: MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val rootView = binding.root
+        supportActionBar?.hide()
         setContentView(rootView)
-        setupView()
-        setupObservers()
+        onClickedKeyboardSearch()
+        onClickedSearchIcon()
+        setupPagingAdapter()
+        stateLoaderHandler()
     }
 
-    override fun onResume() {
-        super.onResume()
-        mainViewModel.liveDataSong.observe(this) {
-            homeAdapter.listSong = it
-            homeAdapter.notifyDataSetChanged()
+    private fun onClickedKeyboardSearch() {
+        binding.textInput.setOnEditorActionListener { view, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val searchWord = binding.textInput.text.toString()
+                binding.resultTitle.text = "Search result: $searchWord"
+                lifecycleScope.launch {
+                    mainViewModel.getSearchResult(searchWord)
+                        .collect { pagingDataSong ->
+                            homeMainAdapter.submitData(pagingDataSong)
+                        }
+                }
+                hideKeyboard(view)
+                true
+            } else {
+                false
+            }
         }
     }
 
-    private fun setupView() {
-        setupRecycler()
-    }
-
-    private fun setupObservers() {
+    private fun onClickedSearchIcon() {
         binding.searchButton.setOnClickListener {
-            getInputText()
+            val searchWord = binding.textInput.text.toString()
+            binding.resultTitle.text = "Search result: $searchWord"
+            lifecycleScope.launch {
+                mainViewModel.getSearchResult(searchWord)
+                    .collect { pagingDataSong ->
+                        homeMainAdapter.submitData(pagingDataSong)
+                    }
+            }
             hideKeyboard(it)
-            setupLoading()
         }
     }
 
-    private fun setupRecycler() {
-        homeAdapter = Adapter(emptyList())
+    private fun setupPagingAdapter() {
+        homeMainAdapter = MainAdapter()
         binding.recyclerViewMain.apply {
-            adapter = homeAdapter
+            adapter = homeMainAdapter.withLoadStateFooter(
+                footer = LoadStateAdapter { homeMainAdapter.retry() }
+            )
             layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
         }
-    }
-
-    private fun getInputText() {
-        mainViewModel.getSearchResult(binding.textInput.text.toString())
     }
 
     private fun hideKeyboard(view: View) {
@@ -65,12 +84,28 @@ class MainActivity : AppCompatActivity() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun setupLoading() {
-        mainViewModel.liveDataLoading.observe(this) {
-            if (it == true) {
-                binding.loadingScreen.visibility = View.VISIBLE
+    private fun stateLoaderHandler() {
+        binding.buttonRetry.setOnClickListener {
+            homeMainAdapter.retry()
+        }
+        homeMainAdapter.addLoadStateListener { loadStates ->
+            if (loadStates.refresh is LoadState.Loading) {
+                binding.buttonRetry.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
             } else {
-                binding.loadingScreen.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
+                val errorState = when {
+                    loadStates.append is LoadState.Error -> loadStates.append as LoadState.Error
+                    loadStates.prepend is LoadState.Error -> loadStates.prepend as LoadState.Error
+                    loadStates.refresh is LoadState.Error -> {
+                        binding.buttonRetry.visibility = View.VISIBLE
+                        loadStates.refresh as LoadState.Error
+                    }
+                    else -> null
+                }
+                errorState?.let {
+                    Toast.makeText(this, it.error.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

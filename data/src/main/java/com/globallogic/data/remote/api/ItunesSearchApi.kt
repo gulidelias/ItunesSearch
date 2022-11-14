@@ -11,10 +11,11 @@ interface ItunesSearchApi {
 
     @GET("search")
     suspend fun getSearchResults(
-        @Query("term") searchTerm: String,
+        @Query("term") searchWord: String,
         @Query("media") mediaType: String,
         @Query("entity") entity: String,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int,
     ): Response<ResponseDTO<SongDTO>>
 
     @GET("lookup")
