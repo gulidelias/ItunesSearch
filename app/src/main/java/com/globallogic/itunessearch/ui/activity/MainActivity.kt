@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         binding.searchButton.setOnClickListener {
             getInputText()
             hideKeyboard(it)
-            setupLoading()
         }
     }
 
@@ -63,15 +62,5 @@ class MainActivity : AppCompatActivity() {
         val inputMethodManager =
             getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    }
-
-    private fun setupLoading() {
-        mainViewModel.liveDataLoading.observe(this) {
-            if (it == true) {
-                binding.loadingScreen.visibility = View.VISIBLE
-            } else {
-                binding.loadingScreen.visibility = View.GONE
-            }
-        }
     }
 }

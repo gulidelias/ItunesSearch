@@ -92,10 +92,8 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun addMP3(mp3Url: String) {
-        // Build the media item.
         val mediaItem = MediaItem.fromUri(mp3Url)
         exoPlayer.setMediaItem(mediaItem)
-        // Prepare the player.
         exoPlayer.prepare()
     }
 
