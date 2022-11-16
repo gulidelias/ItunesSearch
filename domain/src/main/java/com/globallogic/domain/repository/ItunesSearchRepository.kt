@@ -1,21 +1,19 @@
-package com.globallogic.domain.repository1567705492
+package com.globallogic.domain.repository
 
+import androidx.paging.PagingData
 import com.globallogic.domain.entities.AlbumWithSongs
 import com.globallogic.domain.entities.Song
-import com.globallogic.domain.repository.BaseResponse
+import kotlinx.coroutines.flow.Flow
 
 interface ItunesSearchRepository {
 
-    suspend fun getSearchResult(
+    fun getSearchResult(
         searchWord: String,
-        mediaType: String,
-        entityType: String,
-        limit: Int
-    ): BaseResponse<List<Song>>
+        pageSize: Int = 20,
+    ): Flow<PagingData<Song>>
 
     suspend fun getSongsByAlbumId(
         albumId: Int,
         entityType: String
     ): BaseResponse<AlbumWithSongs>
-
 }

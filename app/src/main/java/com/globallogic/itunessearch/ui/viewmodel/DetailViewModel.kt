@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 
 class DetailViewModel(private val getSongsByAlbumUseCase: GetSongsByAlbumUseCase) : ViewModel() {
 
+
     private val _liveDataListOfSong = MutableLiveData<List<Song>>()
     val liveDataListOfSong: LiveData<List<Song>>
         get() = _liveDataListOfSong
@@ -22,7 +23,8 @@ class DetailViewModel(private val getSongsByAlbumUseCase: GetSongsByAlbumUseCase
                     is BaseResponse.Success -> {
                         _liveDataListOfSong.postValue(it.data.songs)
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
         }

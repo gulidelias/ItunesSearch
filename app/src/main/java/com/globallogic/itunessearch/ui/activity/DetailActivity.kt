@@ -15,6 +15,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailActivity : AppCompatActivity(), Player.Listener {
@@ -30,6 +31,7 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         super.onCreate(savedInstanceState)
         binding = DetailActivityBinding.inflate(layoutInflater)
         val rootView = binding.root
+        supportActionBar?.hide()
         setContentView(rootView)
         progressBar = binding.progressBar
 
@@ -38,7 +40,7 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         setupRecycler()
         getSongsByAlbumId(selectedSong)
         setupPlayer()
-        selectedSong?.previewUrl?.let { addMP3(it) }
+
     }
 
     override fun onResume() {
@@ -64,7 +66,11 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         binding.songAlbum.text = song?.collectionName
         binding.songTitle.text = song?.trackName
         val url = song?.imageCover
-        Picasso.get().load(url).fit().into(binding.albumCover)
+        Picasso.get()
+            .load(url)
+            .fit()
+            .transform(RoundedCornersTransformation(16, 2))
+            .into(binding.albumCover)
     }
 
     private fun setupRecycler() {
@@ -85,9 +91,6 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         exoPlayer = ExoPlayer.Builder(this).build()
         styledPlayerView = binding.exoPlayerView
         styledPlayerView.player = exoPlayer
-        styledPlayerView.controllerShowTimeoutMs = 0
-        styledPlayerView.useArtwork = true
-        styledPlayerView.defaultArtwork
         exoPlayer.addListener(this)
     }
 

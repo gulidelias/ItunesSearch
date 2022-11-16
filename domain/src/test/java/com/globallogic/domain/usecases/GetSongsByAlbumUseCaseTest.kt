@@ -3,7 +3,7 @@ package com.globallogic.domain.usecases
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.globallogic.domain.entities.Song
 import com.globallogic.domain.repository.BaseResponse
-import com.globallogic.domain.repository1567705492.ItunesSearchRepository
+import com.globallogic.domain.repository.ItunesSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

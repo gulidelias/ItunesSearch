@@ -8,6 +8,7 @@ import com.globallogic.domain.entities.Song
 import com.globallogic.itunessearch.R
 import com.globallogic.itunessearch.databinding.ItemViewAlbumSongBinding
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 
 class DetailAdapter(var listSong: List<Song>, private val onSongClicked: (Song) -> Unit) :
     RecyclerView.Adapter<SongViewHolder>() {
@@ -38,6 +39,7 @@ class SongViewHolder(itemView: View, private val onSongClicked: (Song) -> Unit) 
         Picasso.get()
             .load(url)
             .fit()
+            .transform(RoundedCornersTransformation(16, 0))
             .into(binding.albumCover)
     }
 }

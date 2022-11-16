@@ -1,43 +1,42 @@
 package com.globallogic.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.globallogic.data.remote.api.ItunesSearchApi
 import com.globallogic.data.utils.toAlbum
-import com.globallogic.data.utils.toDomainSong
 import com.globallogic.data.utils.toSong
 import com.globallogic.domain.entities.Album
 import com.globallogic.domain.entities.AlbumWithSongs
 import com.globallogic.domain.entities.Song
 import com.globallogic.domain.repository.BaseResponse
-import com.globallogic.domain.repository1567705492.ItunesSearchRepository
+import com.globallogic.domain.repository.ItunesSearchRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class ItunesSearchRepositoryImpl(private val itunesSearchService: ItunesSearchApi) :
     ItunesSearchRepository {
 
-    override suspend fun getSearchResult(
+    override fun getSearchResult(
         searchWord: String,
-        mediaType: String,
-        entityType: String,
-        limit: Int
-    ): BaseResponse<List<Song>> =
-        withContext(Dispatchers.IO) {
-            val response =
-                itunesSearchService.getSearchResults(searchWord, mediaType, entityType, limit)
-            if (response.isSuccessful) {
-                response.body()?.results?.let { listSongDTO ->
-                    val searchResultList = listSongDTO.map {
-                        it.toDomainSong()
-                    }
-                    // map to entity and add to data base then map and return Song
-                    return@withContext BaseResponse.Success(searchResultList)
-                } ?: kotlin.run {
-                    return@withContext BaseResponse.Failure(Exception(response.message()))
+        pageSize: Int,
+    ): Flow<PagingData<Song>> {
+            return Pager(
+                config = PagingConfig(
+                    pageSize = pageSize,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    SearchResultPagingSource(
+                        searchWord = searchWord,
+                        itunesSearchService = itunesSearchService,
+                        pageSize = pageSize
+                    )
                 }
-            } else {
-                return@withContext BaseResponse.Failure(Exception(response.message()))
-            }
+            ).flow
         }
+
 
     override suspend fun getSongsByAlbumId(
         albumId: Int,
