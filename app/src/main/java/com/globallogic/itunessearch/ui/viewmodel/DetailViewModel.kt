@@ -11,6 +11,9 @@ import kotlinx.coroutines.launch
 
 class DetailViewModel(private val getSongsByAlbumUseCase: GetSongsByAlbumUseCase) : ViewModel() {
 
+    private val _liveDataError = MutableLiveData<String>()
+    val liveDataError: LiveData<String>
+        get() = _liveDataError
 
     private val _liveDataListOfSong = MutableLiveData<List<Song>>()
     val liveDataListOfSong: LiveData<List<Song>>
@@ -18,15 +21,16 @@ class DetailViewModel(private val getSongsByAlbumUseCase: GetSongsByAlbumUseCase
 
     fun getSongsByAlbum(albumId: Int) {
         viewModelScope.launch {
-            getSongsByAlbumUseCase.invoke(albumId).let {
-                when (it) {
-                    is BaseResponse.Success -> {
-                        _liveDataListOfSong.postValue(it.data.songs)
-                    }
-                    else -> {
-                    }
+            when (val response = getSongsByAlbumUseCase.invoke(albumId)) {
+                is BaseResponse.Success -> {
+                    _liveDataListOfSong.postValue(response.data.songs)
+                }
+                is BaseResponse.Failure -> {
+                    _liveDataError.postValue("error")
                 }
             }
         }
     }
 }
+
+

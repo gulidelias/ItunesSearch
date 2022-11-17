@@ -6,6 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +14,10 @@ import com.globallogic.itunessearch.databinding.ActivityMainBinding
 import com.globallogic.itunessearch.ui.adapter.LoadStateAdapter
 import com.globallogic.itunessearch.ui.adapter.MainAdapter
 import com.globallogic.itunessearch.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,15 +39,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        binding.searchButton.setOnClickListener {
-            hideKeyboard(it)
-            binding.resultTitle.text = "Search result: ${binding.textInput.text}"
+        binding.textInput.doOnTextChanged { text, start, before, count ->
+            val searchWord = binding.textInput.text.toString()
+            binding.resultTitle.text = "Search result: $searchWord"
             lifecycleScope.launch {
-                mainViewModel.getSearchResult(binding.textInput.text.toString())
-                    .collectLatest { pagingDataSong ->
+                mainViewModel.getSearchResult(text.toString())
+                    .collect { pagingDataSong ->
                         homeMainAdapter.submitData(pagingDataSong)
                     }
             }
+        }
+        binding.searchButton.setOnClickListener {
+            hideKeyboard(it)
         }
     }
 
@@ -64,13 +71,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stateLoaderHandler(){
-
         binding.buttonRetry.setOnClickListener {
             homeMainAdapter.retry()
         }
-
         homeMainAdapter.addLoadStateListener { loadStates ->
-
         if (loadStates.refresh is LoadState.Loading){
             binding.buttonRetry.visibility = View.GONE
             binding.progressBar.visibility = View.VISIBLE

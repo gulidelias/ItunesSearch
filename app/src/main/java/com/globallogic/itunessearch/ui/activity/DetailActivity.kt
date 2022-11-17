@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.globallogic.domain.entities.Song
@@ -12,13 +13,13 @@ import com.globallogic.itunessearch.ui.adapter.DetailAdapter
 import com.globallogic.itunessearch.ui.viewmodel.DetailViewModel
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.Listener
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DetailActivity : AppCompatActivity(), Player.Listener {
+class DetailActivity : AppCompatActivity(), Listener {
 
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var styledPlayerView: StyledPlayerView
@@ -41,6 +42,9 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         getSongsByAlbumId(selectedSong)
         setupPlayer()
 
+        detailViewModel.liveDataError.observe(this) { text ->
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onResume() {
@@ -91,6 +95,9 @@ class DetailActivity : AppCompatActivity(), Player.Listener {
         exoPlayer = ExoPlayer.Builder(this).build()
         styledPlayerView = binding.exoPlayerView
         styledPlayerView.player = exoPlayer
+        styledPlayerView.controllerShowTimeoutMs = 0
+        styledPlayerView.showController()
+        styledPlayerView.controllerHideOnTouch = false
         exoPlayer.addListener(this)
     }
 

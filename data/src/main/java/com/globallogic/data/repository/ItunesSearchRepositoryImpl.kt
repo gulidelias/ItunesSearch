@@ -14,6 +14,8 @@ import com.globallogic.domain.repository.ItunesSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import retrofit2.Response
+import kotlin.math.E
 
 class ItunesSearchRepositoryImpl(private val itunesSearchService: ItunesSearchApi) :
     ItunesSearchRepository {
@@ -43,24 +45,27 @@ class ItunesSearchRepositoryImpl(private val itunesSearchService: ItunesSearchAp
         entityType: String
     ): BaseResponse<AlbumWithSongs> =
         withContext(Dispatchers.IO) {
-            val response =
-                itunesSearchService.getSongByAlbumId(albumId, entityType)
-            if (response.isSuccessful) {
-                response.body()?.results?.let { listAlbumWithSongsDTO ->
-                    var album: Album? = null
-                    val songs = mutableListOf<Song>()
-                    listAlbumWithSongsDTO.forEach { item ->
-                        item.toAlbum()?.let { album = it }
-                        item.toSong()?.let { songs.add(it) }
-                    }
+            try {
+                val response = itunesSearchService.getSongByAlbumId(albumId, entityType)
+                if (response.isSuccessful) {
+                    response.body()?.results?.let { listAlbumWithSongsDTO ->
+                        var album: Album? = null
+                        val songs = mutableListOf<Song>()
+                        listAlbumWithSongsDTO.forEach { item ->
+                            item.toAlbum()?.let { album = it }
+                            item.toSong()?.let { songs.add(it) }
+                        }
 
-                    val albumWithSongs = AlbumWithSongs(album, songs)
-                    return@withContext BaseResponse.Success(albumWithSongs)
-                } ?: kotlin.run {
+                        val albumWithSongs = AlbumWithSongs(album, songs)
+                        return@withContext BaseResponse.Success(albumWithSongs)
+                    } ?: kotlin.run {
+                        return@withContext BaseResponse.Failure(Exception(response.message()))
+                    }
+                } else {
                     return@withContext BaseResponse.Failure(Exception(response.message()))
                 }
-            } else {
-                return@withContext BaseResponse.Failure(Exception(response.message()))
+            } catch (exception: Exception) {
+                return@withContext BaseResponse.Failure(Exception(exception))
             }
         }
 }

@@ -38,9 +38,9 @@ class SearchResultPagingSource(
 
             LoadResult.Page(data = listOfSongs, nextKey = nextKey, prevKey = prevKey)
         } catch (exception: IOException) {
-            return LoadResult.Error(exception)
+             LoadResult.Error(exception)
         } catch (exception: HttpException) {
-            return LoadResult.Error(exception)
+             LoadResult.Error(exception)
         }
     }
 

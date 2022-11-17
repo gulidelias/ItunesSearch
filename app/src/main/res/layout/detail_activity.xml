@@ -101,9 +101,7 @@
             android:id="@+id/exo_player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:show_buffering="when_playing"
-            app:hide_on_touch="false"
-            app:use_artwork="true">
+            app:show_buffering="when_playing">
 
             <ProgressBar
                 android:id="@+id/progressBar"
