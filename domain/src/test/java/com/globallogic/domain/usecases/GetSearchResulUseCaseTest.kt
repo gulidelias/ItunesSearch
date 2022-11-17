@@ -1,11 +1,13 @@
 package com.globallogic.domain.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.PagingData
 import com.globallogic.domain.entities.Song
 import com.globallogic.domain.repository.BaseResponse
 import com.globallogic.domain.repository.ItunesSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -16,7 +18,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
-import kotlin.Exception
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
@@ -41,9 +42,6 @@ class GetSearchResulUseCaseTest {
             `when`(
                 repository.getSearchResult(
                     searchWord = anyString(),
-                    entityType = anyString(),
-                    mediaType = anyString(),
-                    limit = anyInt()
                 )
             ).thenReturn(
                 SEARCH_RESPONSE
@@ -51,20 +49,12 @@ class GetSearchResulUseCaseTest {
             // WHEN
             val result = GetSearchResultUseCase(repository).invoke(
                 searchWord = anyString(),
-                entityType = anyString(),
-                mediaType = anyString(),
-                limit = anyInt()
             )
             testDispatcher.scheduler.advanceUntilIdle()
             // THEN
             verify(repository).getSearchResult(
                 searchWord = anyString(),
-                entityType = anyString(),
-                mediaType = anyString(),
-                limit = anyInt()
             )
-            assert(result is BaseResponse.Success)
-            assert((result as BaseResponse.Success<Song>).data == SONG)
         }
     }
 
@@ -107,18 +97,13 @@ class GetSearchResulUseCaseTest {
         val SONG = Song(
             artistId = 1,
             artistName = "artist name",
-            artworkUrl100 = "url",
             collectionId = 2,
             collectionName = "album name",
-            collectionViewUrl = "url",
-            kind = "song",
-            previewUrl = "url",
             trackId = 1,
             trackName = "song name",
-            trackNumber = 2,
-            trackViewUrl = "url"
-
+            imageCover = "url",
+            previewUrl = "url"
         )
-        val SEARCH_RESPONSE = BaseResponse.Success(SONG)
+        val SEARCH_RESPONSE = Flow<PagingData<Song>>
     }
 }
