@@ -2,12 +2,15 @@ package com.globallogic.itunessearch.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.globallogic.domain.entities.Song
 import com.globallogic.itunessearch.databinding.ItemViewSongBinding
 import com.globallogic.itunessearch.ui.activity.DetailActivity
+import com.globallogic.itunessearch.ui.activity.MainActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 
@@ -46,7 +49,7 @@ class SearchViewHolder(private val binding: ItemViewSongBinding) :
         binding.songArtist.text = song.artistName
         binding.songAlbum.text = song.collectionName
         binding.songTitle.text = song.trackName
-        binding.cardviewsong.setOnClickListener {
+        binding.cardViewSong.setOnClickListener {
             val intent = DetailActivity.getIntent(itemView.context, song)
             itemView.context.startActivity(intent)
         }

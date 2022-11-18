@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cardviewsong"
+    android:id="@+id/card_view_song"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_xs"
@@ -11,7 +11,8 @@
     app:cardElevation="@dimen/margin_s"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layout_constraintTop_toTopOf="parent"
+    android:transitionName="transition_card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,7 +25,8 @@
             android:contentDescription="@string/album_cover"
             android:padding="@dimen/padding_s"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:transitionName="transition_album_cover"/>
 
         <TextView
             android:id="@+id/song_title"
@@ -37,7 +39,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toTopOf="@+id/album_cover"
-            tools:text="Song Tittle" />
+            tools:text="Song Tittle"
+            android:transitionName="transition_song_title"/>
 
         <TextView
             android:id="@+id/song_artist"
@@ -50,7 +53,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/song_title"
-            tools:text="song artist" />
+            tools:text="song artist"
+            android:transitionName="transition_song_artist"/>
 
         <TextView
             android:id="@+id/song_album"
@@ -62,7 +66,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/song_artist"
-            tools:text="song album" />
+            tools:text="song album"
+            android:transitionName="transition_song_album"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

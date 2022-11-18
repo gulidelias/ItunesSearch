@@ -12,20 +12,19 @@ import com.globallogic.itunessearch.databinding.DetailActivityBinding
 import com.globallogic.itunessearch.ui.adapter.DetailAdapter
 import com.globallogic.itunessearch.ui.viewmodel.DetailViewModel
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player.Listener
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DetailActivity : AppCompatActivity(), Listener {
+class DetailActivity : AppCompatActivity() {
 
-    private lateinit var exoPlayer: ExoPlayer
     private lateinit var styledPlayerView: StyledPlayerView
     private lateinit var progressBar: ProgressBar
     private lateinit var binding: DetailActivityBinding
     private lateinit var detailAdapter: DetailAdapter
+    private val exoPlayer: ExoPlayer by inject()
     private val detailViewModel: DetailViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +39,8 @@ class DetailActivity : AppCompatActivity(), Listener {
         setupView(selectedSong)
         setupRecycler()
         getSongsByAlbumId(selectedSong)
-        setupPlayer()
+        setupPlayerView()
+
 
         detailViewModel.liveDataError.observe(this) { text ->
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
@@ -49,7 +49,6 @@ class DetailActivity : AppCompatActivity(), Listener {
 
     override fun onResume() {
         super.onResume()
-        setupPlayer()
         detailViewModel.liveDataListOfSong.observe(this) {
             detailAdapter.listSong = it
             detailAdapter.notifyDataSetChanged()
@@ -58,7 +57,7 @@ class DetailActivity : AppCompatActivity(), Listener {
 
     override fun onStop() {
         super.onStop()
-        exoPlayer.release()
+        detailViewModel.onStop()
     }
 
     private fun getSongsByAlbumId(song: Song?) {
@@ -81,8 +80,7 @@ class DetailActivity : AppCompatActivity(), Listener {
         detailAdapter = DetailAdapter(emptyList()) { song ->
             setupView(song)
             song.previewUrl?.let {
-                addMP3(it)
-                exoPlayer.play()
+                detailViewModel.onSongClicked(it)
             }
         }
         binding.recyclerViewDetails.apply {
@@ -91,21 +89,14 @@ class DetailActivity : AppCompatActivity(), Listener {
         }
     }
 
-    private fun setupPlayer() {
-        exoPlayer = ExoPlayer.Builder(this).build()
+    private fun setupPlayerView() {
         styledPlayerView = binding.exoPlayerView
         styledPlayerView.player = exoPlayer
         styledPlayerView.controllerShowTimeoutMs = 0
         styledPlayerView.showController()
         styledPlayerView.controllerHideOnTouch = false
-        exoPlayer.addListener(this)
     }
 
-    private fun addMP3(mp3Url: String) {
-        val mediaItem = MediaItem.fromUri(mp3Url)
-        exoPlayer.setMediaItem(mediaItem)
-        exoPlayer.prepare()
-    }
 
     companion object {
 
