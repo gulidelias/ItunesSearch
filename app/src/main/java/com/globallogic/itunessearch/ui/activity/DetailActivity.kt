@@ -41,19 +41,16 @@ class DetailActivity : AppCompatActivity() {
         getSongsByAlbumId(selectedSong)
         setupPlayerView()
 
+        detailViewModel.liveDataListOfSong.observe(this) {
+            detailAdapter.listSong = it
+            detailAdapter.notifyDataSetChanged()
+        }
 
         detailViewModel.liveDataError.observe(this) { text ->
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        detailViewModel.liveDataListOfSong.observe(this) {
-            detailAdapter.listSong = it
-            detailAdapter.notifyDataSetChanged()
-        }
-    }
 
     override fun onStop() {
         super.onStop()
