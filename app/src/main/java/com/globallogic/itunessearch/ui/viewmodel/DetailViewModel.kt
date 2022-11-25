@@ -7,9 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.globallogic.domain.entities.Song
 import com.globallogic.domain.repository.BaseResponse
 import com.globallogic.domain.usecases.GetSongsByAlbumUseCase
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import kotlinx.coroutines.launch
 
-class DetailViewModel(private val getSongsByAlbumUseCase: GetSongsByAlbumUseCase) : ViewModel() {
+class DetailViewModel(
+    private val getSongsByAlbumUseCase: GetSongsByAlbumUseCase,
+    private val exoPlayer: ExoPlayer
+) : ViewModel() {
 
     private val _liveDataError = MutableLiveData<String>()
     val liveDataError: LiveData<String>
@@ -31,6 +36,17 @@ class DetailViewModel(private val getSongsByAlbumUseCase: GetSongsByAlbumUseCase
             }
         }
     }
+
+    fun onStop() {
+        exoPlayer.stop()
+        exoPlayer.seekToDefaultPosition()
+    }
+
+    fun onSongClicked(url: String) {
+        val mediaItem = MediaItem.fromUri(url)
+        exoPlayer.prepare()
+        exoPlayer.setMediaItem(mediaItem)
+        exoPlayer.play()
+
+    }
 }
-
-
