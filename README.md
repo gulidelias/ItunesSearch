@@ -25,7 +25,6 @@ En el proyecto se usaron 3 capas
 
 ## Estructura del Proyecto
 ```
-com._____.itenessearch 
 
 ├── app (module)                 
 │      ├── application  
