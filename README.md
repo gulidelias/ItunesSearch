@@ -7,6 +7,7 @@ Asi tambien nos permite reproducir una preview de 30 segundos de cualquier canci
 haciendo uso de [iTunes Search API](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/Searching.html#//apple_ref/doc/uid/TP40017632-CH5-SW1)
 
 ## Screenshots
+<img src="screenshots/01.png" width="250"/> <img src="screenshots/02.png" width="250"/> <img src="screenshots/03.png" width="250"/><img src="screenshots/04.png" width="250"/><img src="screenshots/Gif.png" width="250"/>
 
 
 ## Arquitecura 
