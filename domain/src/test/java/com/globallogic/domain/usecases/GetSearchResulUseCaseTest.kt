@@ -3,11 +3,10 @@ package com.globallogic.domain.usecases
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingData
 import com.globallogic.domain.entities.Song
-import com.globallogic.domain.repository.BaseResponse
 import com.globallogic.domain.repository.ItunesSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -42,6 +41,7 @@ class GetSearchResulUseCaseTest {
             `when`(
                 repository.getSearchResult(
                     searchWord = anyString(),
+                    pageSize = anyInt()
                 )
             ).thenReturn(
                 SEARCH_RESPONSE
@@ -54,46 +54,12 @@ class GetSearchResulUseCaseTest {
             // THEN
             verify(repository).getSearchResult(
                 searchWord = anyString(),
+                pageSize = anyInt()
             )
-        }
-    }
-
-    @Test
-    fun testUseCaseFailure() {
-        runTest {
-            // GIVEN
-            `when`(
-                repository.getSearchResult(
-                    searchWord = anyString(),
-                    entityType = anyString(),
-                    mediaType = anyString(),
-                    limit = anyInt()
-                )
-            ).thenReturn(BaseResponse.Failure(EXCEPTION))
-
-            // WHEN
-            val result = GetSearchResultUseCase(repository).invoke(
-                searchWord = anyString(),
-                entityType = anyString(),
-                mediaType = anyString(),
-                limit = anyInt()
-            )
-
-            testDispatcher.scheduler.advanceUntilIdle()
-            // THEN
-            verify(repository).getSearchResult(
-                searchWord = anyString(),
-                entityType = anyString(),
-                mediaType = anyString(),
-                limit = anyInt()
-            )
-            assert(result is BaseResponse.Failure)
-            assert((result as BaseResponse.Failure<Song>).exception == EXCEPTION)
         }
     }
 
     companion object {
-        val EXCEPTION = Exception("Error")
         val SONG = Song(
             artistId = 1,
             artistName = "artist name",
@@ -104,6 +70,7 @@ class GetSearchResulUseCaseTest {
             imageCover = "url",
             previewUrl = "url"
         )
-        val SEARCH_RESPONSE = Flow<PagingData<Song>>
+
+        val SEARCH_RESPONSE = flowOf<PagingData<Song>>()
     }
 }
