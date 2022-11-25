@@ -52,8 +52,7 @@ com._____.itenessearch
   
 ## Herramientas y Librerias
  
-- [ViewBinding](https://developer.android.com/topic/libraries/view-binding?hl=es-419). Also, there
-  are
+- [ViewBinding](https://developer.android.com/topic/libraries/view-binding?hl=es-419).
 - [Coroutines](https://developer.android.com/kotlin/coroutines): A coroutine is a concurrency design
   pattern that you can use on Android to simplify code that executes asynchronously.
 - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata): Data objects
@@ -65,6 +64,9 @@ com._____.itenessearch
   demand reduces usage of network bandwidth and system resources.
 - [Retrofit 2](https://github.com/JakeWharton/retrofit2-kotlinx-serialization-converter): A Retrofit
   2 Converter.Factory for Kotlin serialization.
-- [Moshi](https://github.com/square/moshi) & [Moshi Converter](https://github.com/square/retrofit/tree/master/retrofit-converters/moshi): A
-  modern JSON library for Kotlin and Java. The converter uses Moshi for serialization to and from
-  JSON.
+- [Picasso](https://square.github.io/picasso/):A powerful image downloading and caching library for Android
+- [Exoplayer](https://exoplayer.dev/):ExoPlayer is an application level media player for Android. It provides 
+  an alternative to Android’s MediaPlayer API for playing audio and video both locally and over the Internet
+- [Koin](https://insert-koin.io/docs/setup/koin): for dependenci Injection
+- [Mockito](https://site.mockito.org/):Tasty mocking framework for unit tests in Java
+- [Moshi](https://github.com/square/moshi):Moshi is a modern JSON library for Android, Java and Kotlin. It makes it easy to parse JSON into Java and Kotlin classes:
